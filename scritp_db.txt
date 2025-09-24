@@ -1,0 +1,27 @@
+É NECESSÁRIO CRIAR O BANCO DE DADOS ANTES DE RODAR ESSE SCRIPT
+NOME SUGERIDO DO BANCO: py_estoque_3b
+
+CREATE TABLE IF NOT EXISTS usuarios(
+	id SERIAL PRIMARY KEY,
+	nome VARCHAR(80) NOT NULL,
+	email VARCHAR(120) UNIQUE NOT NULL,
+	senha VARCHAR(120) NOT NULL
+);
+CREATE TABLE IF NOT EXISTS produtos(
+	id SERIAL PRIMARY KEY,
+	nome VARCHAR(100) NOT NULL,
+	descricao VARCHAR(200),
+	quantidade INTEGER NOT NULL DEFAULT 0,
+	preco REAL NOT NULL,
+	quantidade_minima INTEGER NOT NULL DEFAULT 1
+);
+CREATE TABLE IF NOT EXISTS movimentacao_estoque(
+	id SERIAL PRIMARY KEY,
+	produto_id INTEGER NOT NULL,
+	usuario_id INTEGER,
+	tipo_movimentacao VARCHAR(10) NOT NULL, --'entrada' ou 'saida'
+	quantidade INTEGER NOT NULL,
+	data_movimentacao TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+	FOREIGN KEY (produto_id) REFERENCES produtos(id),
+	FOREIGN KEY (usuario_id) REFERENCES usuarios(id)
+);
