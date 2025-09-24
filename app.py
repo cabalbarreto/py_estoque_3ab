@@ -16,7 +16,7 @@ DB_HOST = 'localhost'
 DB_NAME = 'py_estoque_3b'
 DB_PORT = '5433'
 # URL-encode a senha para garantir que caracteres especiais sejam tratados corretamente
-ENCODED_DB_PASSWORD = quote.plus(DB_PASSWORD)
+ENCODED_DB_PASSWORD = quote_plus(DB_PASSWORD)
 
 app.config['DATABASE_URL'] = f"postgresql://{DB_USER}:{ENCODED_DB_PASSWORD}@{DB_HOST}:{DB_PORT}/{DB_NAME}"
 
@@ -72,7 +72,7 @@ def home():
         return redirect(url_for('cadastro_produto'))
     return redirect(url_for('autenticacao'))
 
-@app.route('/autenticacao', method=['GET', 'POST'])
+@app.route('/autenticacao', methods=['GET', 'POST'])
 def autenticacao():
     if request.method == 'POST':
         email = request.form['email']
@@ -86,7 +86,7 @@ def autenticacao():
             return render_template('autenticacao.html', erro='E-mail ou senha inválidos')
     return render_template('autenticacao.html')
 
-@app.route('/cadastro_usuario', method=['GET', 'POST'])
+@app.route('/cadastro_usuario', methods=['GET', 'POST'])
 def cadastro_usuario():
     if request.method == 'POST':
         nome = request.form['nome']
@@ -109,7 +109,7 @@ def logout():
     session.pop('usuario_nome', None)
     return redirect(url_for('autenticacao'))
 
-@app.route('/cadastro_produto', method=['GET', 'POST'])
+@app.route('/cadastro_produto', methods=['GET', 'POST'])
 @login_required
 def cadastro_produto():
     if request.method == 'POST':
@@ -139,7 +139,7 @@ def cadastro_produto():
     produtos = query_db('SELECT * FROM produtos ORDER BY quantidade - quantidade_minima')
     return render_template('cadastro_produto.html', produtos=produtos, usuarios=usuario.get('usuario_nome'))
 
-@app.route('/saida_produto/<int:produto_id>', method=['POST'])
+@app.route('/saida_produto/<int:produto_id>', methods=['POST'])
 @login_required
 def saida_produto(produto_id):
     produto = query_db('SELECT * FROM produtos WHERE id = %s', (produto_id,), one=True)
