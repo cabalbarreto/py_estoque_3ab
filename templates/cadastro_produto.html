@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Cadastro e Listagem de Produto</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Olá, {{ usuario }}!</h1>
+            <div class="nav-links">
+                <a href="{{ url_for('estoque') }}">Ver Estoque</a>
+                <a href="{{ url_for('logout') }}">Sair</a>
+            </div>
+        </div>
+
+        <div class="form-container">
+            <h2>Cadastrar/Adicionar Produto</h2>
+            <form action="{{ url_for('cadastro_produto') }}" method="post">
+                <label for="nome">Nome do Produto:</label>
+                <input type="text" id="nome" name="nome" required>
+                
+                <label for="descricao">Descrição:</label>
+                <textarea id="descricao" name="descricao"></textarea>
+                
+                <label for="quantidade">Quantidade (Entrada):</label>
+                <input type="number" id="quantidade" name="quantidade" required>
+                
+                <label for="preco">Preço:</label>
+                <input type="number" id="preco" name="preco" step="0.01" required>
+                
+                <label for="quantidade_minima">Quantidade Mínima para Alerta:</label>
+                <input type="number" id="quantidade_minima" name="quantidade_minima" value="1" min="1" required>
+                <button type="submit">Cadastrar Produto</button>
+            </form>
+        </div>
+
+        <hr>
+
+        <div class="list-container">
+            <h2>Listar Produtos</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Nome</th>
+                        <th>Descrição</th>
+                        <th>Quantidade</th>
+                        <th>Qtd. Mínima</th>
+                        <th>Preço</th>
+                        <th>Ações</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for produto in produtos %}
+                    <tr class="{% if produto.quantidade <= produto.quantidade_minina %}alerta-estoque-baixo{% endif %}">
+                        <td>{{ produto.nome }}</td>
+                        <td>{{ produto.descricao }}</td>
+                        <td>{{ produto.quantidade }}</td>
+                        <td>{{ produto.quantidade_minima }}</td>
+                        <td>R$ {{ "%.2f"|format(produto.preco) }}</td>
+                        <td>
+                            <form action="{{ url_for('saida_produto', produto_id=produto.id) }}" method="post">
+                                <input type="number" name="quantidade_saida" value="1" min="1" max="{{produto.quantidade}}" style="width: 50px;">
+                                <button type="submit">Saída</button>
+                            </form>
+                        </td>
+                    </tr>
+                    {% else %}
+                        <tr>
+                            <td colspan="6">Nenhum produto cadastrado.</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</body>
+</html>
