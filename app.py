@@ -137,7 +137,7 @@ def cadastro_produto():
     
     # Ordenar os produtos com base na proximidade da quantidade mínima
     produtos = query_db('SELECT * FROM produtos ORDER BY quantidade - quantidade_minima')
-    return render_template('cadastro_produto.html', produtos=produtos, usuario=session.get('usuario_nome'))
+    return render_template('cadastro_produto.html', produto=produtos, usuario=session.get('usuario_nome'))
 
 @app.route('/saida_produto/<int:produto_id>', methods=['POST'])
 @login_required
